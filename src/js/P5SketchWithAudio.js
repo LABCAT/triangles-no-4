@@ -5,8 +5,8 @@ import * as p5 from "p5";
 import { Midi } from '@tonejs/midi'
 import PlayIcon from './functions/PlayIcon.js';
 
-import audio from "../audio/circles-no-3.ogg";
-import midi from "../audio/circles-no-3.mid";
+import audio from "../audio/triangles-no-4.ogg";
+import midi from "../audio/triangles-no-4.mid";
 
 const P5SketchWithAudio = () => {
     const sketchRef = useRef();
@@ -28,7 +28,7 @@ const P5SketchWithAudio = () => {
         p.loadMidi = () => {
             Midi.fromUrl(midi).then(
                 function(result) {
-                    const noteSet1 = result.tracks[5].notes; // Synth 1
+                    const noteSet1 = result.tracks[4].notes; // Sampler 1 - worn1
                     p.scheduleCueSet(noteSet1, 'executeCueSet1');
                     p.audioLoaded = true;
                     document.getElementById("loader").classList.add("loading--complete");
@@ -61,6 +61,7 @@ const P5SketchWithAudio = () => {
         p.setup = () => {
             p.canvas = p.createCanvas(p.canvasWidth, p.canvasHeight);
             p.background(0);
+            p.colorMode(p.HSB);
         }
 
         p.draw = () => {
@@ -70,10 +71,14 @@ const P5SketchWithAudio = () => {
         }
 
         p.executeCueSet1 = (note) => {
-            p.background(p.random(255), p.random(255), p.random(255));
-            p.fill(p.random(255), p.random(255), p.random(255));
-            p.noStroke();
-            p.ellipse(p.width / 2, p.height / 2, p.width / 4, p.width / 4);
+            p.background(0);
+            const hue = p.random(0, 360);
+            p.noFill();
+            for (let i = 1; i <= 10; i+=2) {
+                p.stroke(hue, 100, 100, 0.1 * i);
+                p.strokeWeight(44 - i * 4);
+                p.ellipse(p.width / 2, p.height / 2, p.width / 4, p.width / 4);
+            }
         }
 
         p.mousePressed = () => {

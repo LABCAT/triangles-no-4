@@ -28,14 +28,18 @@ const P5SketchWithAudio = () => {
         p.loadMidi = () => {
             Midi.fromUrl(midi).then(
                 function(result) {
+                    console.log(result);
                     const noteSet1 = result.tracks[4].notes; // Sampler 1 - worn1
+                    const noteSet2 = result.tracks[1].notes; // Synth 1 - Hyperbottom
+                    const noteSet3 = result.tracks[7].notes; // Sampler 2 - J60 Logos
                     p.scheduleCueSet(noteSet1, 'executeCueSet1');
+                    p.scheduleCueSet(noteSet2, 'executeCueSet2');
+                    p.scheduleCueSet(noteSet3, 'executeCueSet3');
                     p.audioLoaded = true;
                     document.getElementById("loader").classList.add("loading--complete");
                     document.getElementById("play-icon").classList.remove("fade-out");
                 }
-            );
-            
+            );    
         }
 
         p.preload = () => {
@@ -58,27 +62,58 @@ const P5SketchWithAudio = () => {
             }
         } 
 
+        p.bgColour = 0;
+
         p.setup = () => {
             p.canvas = p.createCanvas(p.canvasWidth, p.canvasHeight);
-            p.background(0);
+            p.background(p.bgColour);
             p.colorMode(p.HSB);
         }
 
+        p.triangles = [];
+
         p.draw = () => {
             if(p.audioLoaded && p.song.isPlaying()){
-
+                p.background(p.bgColour);
+                for (let i = 0; i < p.triangles.length; i++) {
+                    const triangle = p.triangles[i],
+                     {hue, x1, y1, x2, y2, x3, y3} = triangle;
+                    p.noFill();
+                    p.stroke(hue, 100, 100, 0.5);
+                    p.strokeWeight(16);
+                    p.triangle(x1, y1, x2, y2, x3, y3);
+                }
             }
         }
 
         p.executeCueSet1 = (note) => {
-            p.background(0);
-            const hue = p.random(0, 360);
-            p.noFill();
-            for (let i = 1; i <= 10; i+=2) {
-                p.stroke(hue, 100, 100, 0.1 * i);
-                p.strokeWeight(44 - i * 4);
-                p.ellipse(p.width / 2, p.height / 2, p.width / 4, p.width / 4);
+            const hue = p.random(0, 360),
+                { currentCue } = note,
+                scale = currentCue % 19, 
+                arrayIndex = scale === 0 ? 18 : scale - 1;
+            if(scale === 1) {
+                for (let i = 0; i < 19; i++) {
+                    p.triangles[i] = {};
+                }
             }
+            p.triangles[arrayIndex].hue = hue;
+            p.triangles[arrayIndex].x1 = p.width / 2;
+            p.triangles[arrayIndex].y1 = 0 + (p.height/16 * scale);
+            p.triangles[arrayIndex].x2 = 0 + (p.width/16 * scale);
+            p.triangles[arrayIndex].y2 = p.height - (p.height/16 * scale);
+            p.triangles[arrayIndex].x3 = p.width - (p.width/16 * scale);
+            p.triangles[arrayIndex].y3 = p.height - (p.height/16 * scale);
+        }
+
+        p.executeCueSet2 = (note) => {
+            const { currentCue } = note,
+                multiplier = currentCue === 1 ? 0 : (currentCue - 1) % 8 === 0 ? 8 : (currentCue - 1) % 8;
+            console.log(multiplier);
+            p.bgColour = 255 / 32 * multiplier;
+        }
+
+        p.executeCueSet3 = (note) => {
+
         }
 
         p.mousePressed = () => {

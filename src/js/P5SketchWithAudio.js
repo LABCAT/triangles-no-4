@@ -4,6 +4,8 @@ import "p5/lib/addons/p5.sound";
 import * as p5 from "p5";
 import { Midi } from '@tonejs/midi'
 import PlayIcon from './functions/PlayIcon.js';
+import ShuffleArray from './functions/ShuffleArray.js';
+import AnimatedTriangle from './classes/AnimatedTriangle.js';
 
 import audio from "../audio/triangles-no-4.ogg";
 import midi from "../audio/triangles-no-4.mid";
@@ -68,20 +70,31 @@ const P5SketchWithAudio = () => {
             p.canvas = p.createCanvas(p.canvasWidth, p.canvasHeight);
             p.background(p.bgColour);
             p.colorMode(p.HSB);
+            p.frameRate(30);
         }
 
         p.triangles = [];
+
+        p.spinningTriangles = [];
 
         p.draw = () => {
             if(p.audioLoaded && p.song.isPlaying()){
                 p.background(p.bgColour);
                 for (let i = 0; i < p.triangles.length; i++) {
                     const triangle = p.triangles[i],
-                     {hue, x1, y1, x2, y2, x3, y3} = triangle;
-                    p.noFill();
-                    p.stroke(hue, 100, 100, 0.5);
-                    p.strokeWeight(16);
-                    p.triangle(x1, y1, x2, y2, x3, y3);
+                     {hue, x1, y1, x2, y2, x3, y3, canDraw} = triangle;
+                    if(canDraw){
+                        p.noFill();
+                        p.stroke(hue, 100, 100, 0.5);
+                        p.strokeWeight(16);
+                        p.triangle(x1, y1, x2, y2, x3, y3);
+                    }
+                }
+
+                for (let i = 0; i < p.spinningTriangles.length; i++) {
+                    const triangle = p.spinningTriangles[i];
+                    triangle.update();
+                    triangle.draw();
                 }
             }
         }
@@ -91,29 +104,41 @@ const P5SketchWithAudio = () => {
                 { currentCue } = note,
                 scale = currentCue % 19, 
                 arrayIndex = scale === 0 ? 18 : scale - 1;
-            if(scale === 1) {
+            if(scale === 1 && currentCue < 77) {
                 for (let i = 0; i < 19; i++) {
                     p.triangles[i] = {};
                 }
             }
+            else if(scale === 1 && currentCue >= 77) {
+                for (let i = 0; i < 19; i++) {
+                    p.triangles[i].canDraw = false;
+                }
+                p.triangles = ShuffleArray(p.triangles);
+                console.log(p.triangles);
+            }
             p.triangles[arrayIndex].hue = hue;
-            p.triangles[arrayIndex].x1 = p.width / 2;
-            p.triangles[arrayIndex].y1 = 0 + (p.height/16 * scale);
-            p.triangles[arrayIndex].x2 = 0 + (p.width/16 * scale);
-            p.triangles[arrayIndex].y2 = p.height - (p.height/16 * scale);
-            p.triangles[arrayIndex].x3 = p.width - (p.width/16 * scale);
-            p.triangles[arrayIndex].y3 = p.height - (p.height/16 * scale);
+            p.triangles[arrayIndex].canDraw = true;
+            if(currentCue < 77) {
+                p.triangles[arrayIndex].x1 = p.width / 2;
+                p.triangles[arrayIndex].y1 = 0 + (p.height/16 * scale);
+                p.triangles[arrayIndex].x2 = 0 + (p.width/16 * scale);
+                p.triangles[arrayIndex].y2 = p.height - (p.height/16 * scale);
+                p.triangles[arrayIndex].x3 = p.width - (p.width/16 * scale);
+                p.triangles[arrayIndex].y3 = p.height - (p.height/16 * scale);
+                
+            }
         }
 
         p.executeCueSet2 = (note) => {
             const { currentCue } = note,
-                multiplier = currentCue === 1 ? 0 : (currentCue - 1) % 8 === 0 ? 8 : (currentCue - 1) % 8;
-            console.log(multiplier);
+                multiplier = currentCue === 1 ? 32 : (currentCue - 1) % 8 === 0 ? 8 : (currentCue - 1) % 8;
             p.bgColour = 255 / 32 * multiplier;
         }
 
         p.executeCueSet3 = (note) => {
-
+            p.spinningTriangles.push(
+                new AnimatedTriangle(p, p.width/2, p.height/2, p.width/16)
+            );
         }
 
         p.mousePressed = () => {

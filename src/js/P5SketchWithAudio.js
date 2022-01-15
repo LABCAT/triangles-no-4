@@ -70,6 +70,7 @@ const P5SketchWithAudio = () => {
             p.canvas = p.createCanvas(p.canvasWidth, p.canvasHeight);
             p.background(p.bgColour);
             p.colorMode(p.HSB);
+            p.angleMode(p.DEGREES)
             p.frameRate(30);
         }
 
@@ -114,7 +115,6 @@ const P5SketchWithAudio = () => {
                     p.triangles[i].canDraw = false;
                 }
                 p.triangles = ShuffleArray(p.triangles);
-                console.log(p.triangles);
             }
             p.triangles[arrayIndex].hue = hue;
             p.triangles[arrayIndex].canDraw = true;
@@ -132,7 +132,7 @@ const P5SketchWithAudio = () => {
         p.executeCueSet2 = (note) => {
             const { currentCue } = note,
                 multiplier = currentCue === 1 ? 32 : (currentCue - 1) % 8 === 0 ? 8 : (currentCue - 1) % 8;
-            p.bgColour = 255 / 32 * multiplier;
+            p.bgColour = 64 - 8 * multiplier;
         }
 
         p.executeCueSet3 = (note) => {

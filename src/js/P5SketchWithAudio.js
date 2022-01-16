@@ -131,8 +131,8 @@ const P5SketchWithAudio = () => {
 
         p.executeCueSet2 = (note) => {
             const { currentCue } = note,
-                multiplier = currentCue === 1 ? 32 : (currentCue - 1) % 8 === 0 ? 8 : (currentCue - 1) % 8;
-            p.bgColour = 64 - 8 * multiplier;
+                multiplier = currentCue === 1 ? 0 : (currentCue - 1) % 8 === 0 ? 8 : (currentCue - 1) % 8;
+            p.bgColour = currentCue === 1 ? 255 : 64 - 8 * multiplier;
         }
 
         p.executeCueSet3 = (note) => {

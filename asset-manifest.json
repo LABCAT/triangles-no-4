@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/triangles-no-4/static/css/main.a60116e0.chunk.css",
+    "main.js": "/triangles-no-4/static/js/main.fb7ce1a2.chunk.js",
+    "main.js.map": "/triangles-no-4/static/js/main.fb7ce1a2.chunk.js.map",
+    "runtime-main.js": "/triangles-no-4/static/js/runtime-main.09c85927.js",
+    "runtime-main.js.map": "/triangles-no-4/static/js/runtime-main.09c85927.js.map",
+    "static/js/2.1ac16de6.chunk.js": "/triangles-no-4/static/js/2.1ac16de6.chunk.js",
+    "static/js/2.1ac16de6.chunk.js.map": "/triangles-no-4/static/js/2.1ac16de6.chunk.js.map",
+    "index.html": "/triangles-no-4/index.html",
+    "static/css/main.a60116e0.chunk.css.map": "/triangles-no-4/static/css/main.a60116e0.chunk.css.map",
+    "static/js/2.1ac16de6.chunk.js.LICENSE.txt": "/triangles-no-4/static/js/2.1ac16de6.chunk.js.LICENSE.txt",
+    "static/media/triangles-no-4.313b47ce.ogg": "/triangles-no-4/static/media/triangles-no-4.313b47ce.ogg",
+    "static/media/triangles-no-4.50ad8272.mid": "/triangles-no-4/static/media/triangles-no-4.50ad8272.mid"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.09c85927.js",
+    "static/js/2.1ac16de6.chunk.js",
+    "static/css/main.a60116e0.chunk.css",
+    "static/js/main.fb7ce1a2.chunk.js"
+  ]
+}
